@@ -2,7 +2,7 @@ package contracts
 
 var MakeDrinksSchema = `{
 	"type": "record",
-	"name": "makeFood",
+	"name": "makeDrinks",
 	"namespace": "data.avro",
 	"fields" : [
 		{
