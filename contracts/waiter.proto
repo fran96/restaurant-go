@@ -13,7 +13,7 @@ message OrderRequest {
 }
 
 message OrderAcknowledged {
-    int64 orderID = 1;
+    string orderID = 1;
 }
 
 service WaiterService{
