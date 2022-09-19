@@ -19,5 +19,9 @@ func (ks Server) Cook(ctx context.Context, in *pb.MakeFood) (*pb.OrderReceived, 
 	}
 
 	fmt.Printf("Kitchen - OrderReceived: %v ", in.Id)
+
+	// produce an Order kafka message
+	produce(in.Id)
+
 	return &pb.OrderReceived{Message: fmt.Sprintf("Order received ID: %s", in.Id)}, nil
 }
