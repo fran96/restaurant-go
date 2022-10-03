@@ -24,7 +24,6 @@ var (
 )
 
 func (ws *Server) Order(ctx context.Context, in *pb.OrderRequest) (*pb.OrderAcknowledged, error) {
-	fmt.Println("order rpc")
 
 	id := uuid.New()
 	fmt.Println("orderID: ", id.String())
@@ -51,7 +50,8 @@ func (ws *Server) Order(ctx context.Context, in *pb.OrderRequest) (*pb.OrderAckn
 			return nil, err
 		}
 
-		fmt.Println("Waiter - OrderReceived: ", orderReceived)
+		fmt.Println("OrderReceived from kitchen: ", orderReceived)
+
 	}
 
 	return &pb.OrderAcknowledged{OrderID: id.String()}, nil

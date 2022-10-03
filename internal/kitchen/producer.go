@@ -18,7 +18,9 @@ func produce(orderID string) error {
 	defer p.Close()
 
 	go func() {
+
 		for e := range p.Events() {
+			fmt.Printf("produce..")
 			switch ev := e.(type) {
 			case *kafka.Message:
 				if ev.TopicPartition.Error != nil {
