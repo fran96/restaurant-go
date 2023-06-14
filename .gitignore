@@ -18,3 +18,8 @@
 /.idea/restaurant-go.iml
 /.idea/vcs.xml
 /.idea/workspace.xml
+
+/vendor
+.env
+main
+app.env

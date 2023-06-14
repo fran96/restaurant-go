@@ -3,6 +3,7 @@ package waiter
 import (
 	"flag"
 	"fmt"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -10,6 +11,7 @@ import (
 
 	pb "github.com/fran96/restaurant-go/contracts"
 	pbKitchen "github.com/fran96/restaurant-go/contracts/kitchen"
+	"github.com/fran96/restaurant-go/internal/util"
 	"github.com/google/uuid"
 	"golang.org/x/net/context"
 )
@@ -18,10 +20,6 @@ import (
 type Server struct {
 	pb.UnimplementedWaiterServiceServer
 }
-
-var (
-	addr = flag.String("addr", "localhost:50052", "the address to connect to")
-)
 
 func (ws *Server) Order(ctx context.Context, in *pb.OrderRequest) (*pb.OrderAcknowledged, error) {
 
@@ -37,8 +35,14 @@ func (ws *Server) Order(ctx context.Context, in *pb.OrderRequest) (*pb.OrderAckn
 			ListOfFood: in.ListOfFood,
 		}
 
+		flag.Parse()
+		config, err := util.LoadConfig(".")
+		if err != nil {
+			log.Fatal("cannot load config:", err)
+		}
+
 		// Set up a connection to the server.
-		conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		conn, err := grpc.Dial(config.WaiterServerAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			log.Fatalf("did not connect: %v", err)
 		}

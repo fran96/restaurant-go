@@ -1,22 +1,30 @@
 package waiter
 
 import (
+	"flag"
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
+	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/fran96/restaurant-go/internal/util"
 )
 
 func Consume() error {
-	bootstrapServers := "0.0.0.0:9092"
+	flag.Parse()
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+
 	topic := "orderCompleted"
 	sigchan := make(chan os.Signal, 1)
 	signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
 
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers":        bootstrapServers,
+		"bootstrap.servers":        config.KafkaServerAddress,
 		"broker.address.family":    "v4",
 		"group.id":                 "waiterConsumerGroup",
 		"session.timeout.ms":       6000,

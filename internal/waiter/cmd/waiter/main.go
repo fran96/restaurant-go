@@ -2,17 +2,13 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"net"
 
 	pb "github.com/fran96/restaurant-go/contracts"
+	"github.com/fran96/restaurant-go/internal/util"
 	"github.com/fran96/restaurant-go/internal/waiter"
 	"google.golang.org/grpc"
-)
-
-var (
-	port = flag.Int("port", 50051, "The server port")
 )
 
 func main() {
@@ -22,16 +18,21 @@ func main() {
 	}()
 
 	flag.Parse()
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+
+	lis, err := net.Listen("tcp", config.WaiterServerAddress)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	log.Printf("server listening at %v", lis.Addr())
+
+	log.Printf("server listening at %v", config.WaiterServerAddress)
 
 	s := grpc.NewServer()
 	pb.RegisterWaiterServiceServer(s, &waiter.Server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
-
 }

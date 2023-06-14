@@ -2,15 +2,23 @@ package kitchen
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
+	"log"
 
-	"gopkg.in/confluentinc/confluent-kafka-go.v1/kafka"
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 
 	contracts "github.com/fran96/restaurant-go/contracts/avro"
+	"github.com/fran96/restaurant-go/internal/util"
 )
 
 func produce(orderID string) error {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "0.0.0.0:9092"})
+	flag.Parse()
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": config.KafkaServerAddress})
 	if err != nil {
 		panic(err)
 	}
@@ -41,6 +49,8 @@ func produce(orderID string) error {
 	if err != nil {
 		return err
 	}
+
+	// add integration with schema registry
 	p.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic},
 		Value:          []byte(val),
