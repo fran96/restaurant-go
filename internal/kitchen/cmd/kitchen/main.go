@@ -24,10 +24,14 @@ func main() {
 	}
 
 	s := grpc.NewServer()
+
 	pb.RegisterKitchenServiceServer(s, &kitchen.Server{})
 	log.Printf("kitchen server listening at %v", config.KitchenServerAddress)
-
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+
+	s.GracefulStop()
+	log.Print("Server Exited Properly")
+
 }

@@ -29,12 +29,6 @@ func (ws *Server) Order(ctx context.Context, in *pb.OrderRequest) (*pb.OrderAckn
 	if len(in.ListOfFood) > 0 {
 		fmt.Println("order rpc - contains food")
 
-		// Call Kitchen
-		makeFood := &pbKitchen.MakeFood{
-			Id:         id.String(),
-			ListOfFood: in.ListOfFood,
-		}
-
 		flag.Parse()
 		config, err := util.LoadConfig(".")
 		if err != nil {
@@ -49,6 +43,11 @@ func (ws *Server) Order(ctx context.Context, in *pb.OrderRequest) (*pb.OrderAckn
 		defer conn.Close()
 
 		client := pbKitchen.NewKitchenServiceClient(conn)
+		makeFood := &pbKitchen.MakeFood{
+			Id:         id.String(),
+			ListOfFood: in.ListOfFood,
+		}
+
 		orderReceived, err := client.Cook(ctx, makeFood)
 		if err != nil {
 			return nil, err

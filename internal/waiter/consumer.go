@@ -23,6 +23,9 @@ func Consume() error {
 	sigchan := make(chan os.Signal, 1)
 	signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
 
+	v := <-sigchan
+	log.Fatalf("signal.Notify: %v", v)
+
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers":        config.KafkaServerAddress,
 		"broker.address.family":    "v4",
