@@ -39,9 +39,6 @@ func Consume() error {
 		fmt.Fprintf(os.Stderr, "Failed to create consumer: %s\n", err)
 		os.Exit(1)
 	}
-
-	fmt.Printf("Created Consumer %v\n", c)
-
 	err = c.SubscribeTopics([]string{topic}, nil)
 
 	run := true
@@ -49,7 +46,7 @@ func Consume() error {
 	for run {
 		select {
 		case sig := <-sigchan:
-			fmt.Printf("Caught signal %v: terminating\n", sig)
+			fmt.Printf("\nCaught signal %v: terminating\n", sig)
 			run = false
 		default:
 			ev := c.Poll(100)
@@ -59,7 +56,7 @@ func Consume() error {
 
 			switch e := ev.(type) {
 			case *kafka.Message:
-				fmt.Printf("%% Waiter consumed the Message on %s:\n%s\n",
+				fmt.Printf("\nWaiter consumed the Message on %s:\n%s\n",
 					e.TopicPartition, string(e.Value))
 				if e.Headers != nil {
 					fmt.Printf("%% Headers: %v\n", e.Headers)

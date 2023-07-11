@@ -3,6 +3,7 @@ package waiter
 import (
 	"flag"
 	"fmt"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -24,11 +25,8 @@ type Server struct {
 func (ws *Server) Order(ctx context.Context, in *pb.OrderRequest) (*pb.OrderAcknowledged, error) {
 
 	id := uuid.New()
-	fmt.Println("orderID: ", id.String())
 
 	if len(in.ListOfFood) > 0 {
-		fmt.Println("order rpc - contains food")
-
 		flag.Parse()
 		config, err := util.LoadConfig(".")
 		if err != nil {
@@ -36,7 +34,7 @@ func (ws *Server) Order(ctx context.Context, in *pb.OrderRequest) (*pb.OrderAckn
 		}
 
 		// Set up a connection to the server.
-		conn, err := grpc.Dial(config.WaiterServerAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
+		conn, err := grpc.Dial(config.KitchenServerAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
 			log.Fatalf("did not connect: %v", err)
 		}
@@ -53,7 +51,7 @@ func (ws *Server) Order(ctx context.Context, in *pb.OrderRequest) (*pb.OrderAckn
 			return nil, err
 		}
 
-		fmt.Println("OrderReceived from kitchen: ", orderReceived)
+		fmt.Printf("\nOrderReceived from kitchen %v at %v: ", orderReceived, time.Now())
 
 	}
 

@@ -6,8 +6,6 @@ import (
 	"net"
 
 	waiterPb "github.com/fran96/restaurant-go/contracts"
-	kitchenPb "github.com/fran96/restaurant-go/contracts/kitchen"
-	"github.com/fran96/restaurant-go/internal/kitchen"
 	"github.com/fran96/restaurant-go/internal/util"
 	"github.com/fran96/restaurant-go/internal/waiter"
 	"google.golang.org/grpc"
@@ -33,7 +31,6 @@ func main() {
 
 	s := grpc.NewServer()
 	waiterPb.RegisterWaiterServiceServer(s, &waiter.Server{})
-	kitchenPb.RegisterKitchenServiceServer(s, &kitchen.Server{})
 	log.Printf("waiter server listening at %v", config.WaiterServerAddress)
 
 	if err := s.Serve(lis); err != nil {

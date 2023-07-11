@@ -18,8 +18,7 @@ func (ks Server) Cook(ctx context.Context, in *pb.MakeFood) (*pb.OrderReceived, 
 	if in.ListOfFood == nil {
 		return nil, errors.New("can't cook anything")
 	}
-
-	fmt.Printf("Kitchen - OrderReceived: %v ", in.Id)
+	fmt.Printf("\nOrder received from waiter with id: %v at %v \n", in.Id, time.Now())
 
 	// produce an Order kafka message
 	go func() {

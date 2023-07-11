@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 
@@ -28,13 +29,12 @@ func produce(orderID string) error {
 	go func() {
 
 		for e := range p.Events() {
-			fmt.Printf("produce..")
 			switch ev := e.(type) {
 			case *kafka.Message:
 				if ev.TopicPartition.Error != nil {
 					fmt.Printf("Delivery failed: %v\n", ev.TopicPartition)
 				} else {
-					fmt.Printf("Delivered message to %v\n", ev.TopicPartition)
+					fmt.Printf("\nDelivered message to %v\n", ev.TopicPartition)
 				}
 			}
 		}
@@ -50,12 +50,11 @@ func produce(orderID string) error {
 		return err
 	}
 
-	// add integration with schema registry
 	p.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic},
 		Value:          []byte(val),
 	}, nil)
-	fmt.Println("ORDER SUCCESS, ORDERID: ", orderID)
+	fmt.Printf("\n orderCompleted produced with orderID: %v at %v: ", orderID, time.Now())
 
 	p.Flush(15 * 1000)
 
