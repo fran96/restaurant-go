@@ -1,20 +1,12 @@
-version: "3"
+version: '3'
 
 services:
-  cache:
-      image: redis:6.2-alpine
-      restart: always
-      ports:
-        - '6539:6539'
-      command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
-      volumes: 
-        - cache:/data
   zookeeper:
     image: zookeeper:3.7.0 # Mac M1 Friendly
     ports:
       - "2181:2181"
-
-  # This has three listeners you can experiment with.
+  
+  # This has three listeners you can experiment with. 
   # LISTENER_INTERNAL for internal traffic on the Docker network
   # LISTENER_DOCKERHOST for traffic from the Docker-host machine (`localhost`)
   # LISTENER_HOSTNAME for traffic from outside, reaching the Docker host on the DNS name `give-me-kafka`
@@ -33,12 +25,12 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
       KAFKA_DELETE_TOPIC_ENABLE: "true"
       KAFKA_ZOOKEEPER_CONNECTION_TIMEOUT_MS: 10000
-      KAFKA_ZOOKEEPER_SSL_CLIENT_ENABLE: "false"
+      KAFKA_ZOOKEEPER_SSL_CLIENT_ENABLE: 'false'
     depends_on:
       - zookeeper
 
   schema-registry:
-    image: eugenetea/schema-registry-arm64:latest # Mac M1 Friendly
+    image: eugenetea/schema-registry-arm64:latest # Mac M1 Friendly 
     hostname: schema-registry
     restart: unless-stopped
     ports:
@@ -48,18 +40,4 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka:29092"
     depends_on:
       - kafka
-  
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    ports:
-      - "6831:6831/udp"
-      - "16686:16686"
-    networks:
-      - jaeger-example    
-
-volumes:
-  cache:
-    driver: local
-    
-networks:
-  jaeger-example:
+      

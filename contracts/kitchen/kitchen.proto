@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "github.com/fran96/restaurant-go/contracts/KitchenProto";
+
+package KitchenProto;
+
+
+message MakeFood {
+    string id = 1;
+    repeated string listOfFood = 2;
+}
+
+message OrderReceived{
+    string message = 1;
+}
+
+service KitchenService{
+    rpc Cook(MakeFood) returns (OrderReceived);
+}

@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-option go_package = "github.com/fran96/restaurant-go/contracts/WaiterProto";
+option go_package = "github.com/fran96/restaurant-go/contracts/Proto";
 
-package WaiterProto;
+package Proto;
 
 
 message OrderRequest {
@@ -13,7 +13,7 @@ message OrderRequest {
 }
 
 message OrderAcknowledged {
-    int64 orderID = 1;
+    string orderID = 1;
 }
 
 service WaiterService{
